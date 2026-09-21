@@ -1,0 +1,328 @@
+:root {
+  --text: #6b6375;
+  --text-h: #08060d;
+  --bg: #fff;
+  --border: #e5e4e7;
+  --accent: #5c5cab;
+  --accent-bg: rgba(56, 56, 255, 0.1);
+  --sandbox-bg: rgba(0, 0, 0, 0.025);
+  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color-scheme: light dark;
+  color: var(--text);
+  background: var(--bg);
+  font: 15px/1.4 var(--sans);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #9ca3af;
+    --text-h: #f3f4f6;
+    --bg: #16171d;
+    --border: #2e303a;
+    --accent: #8c8cff;
+    --accent-bg: rgba(56, 56, 255, 0.22);
+    --sandbox-bg: rgba(255, 255, 255, 0.03);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  --left: 260px;
+  --right: 420px;
+  display: grid;
+  grid-template-columns: var(--left) 1fr var(--right);
+  margin: 0;
+}
+
+body.hide-left {
+  --left: 0px;
+}
+
+body.hide-right {
+  --right: 0px;
+}
+
+#sidebar,
+#panel {
+  overflow-x: hidden;
+}
+
+/* ?raw in the URL: the render alone, nothing around it. */
+body.raw {
+  --left: 0px;
+  --right: 0px;
+}
+
+body.raw #toggle-left,
+body.raw #toggle-right,
+body.raw .caption,
+body.raw .tweakpane {
+  display: none;
+}
+
+body.no-notes #toggle-right {
+  display: none;
+}
+
+#sidebar {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 12px 32px;
+  overflow-y: auto;
+  border-right: 1px solid var(--border);
+}
+
+.brand {
+  margin: 0 12px 20px;
+  color: var(--text-h);
+  font-weight: 600;
+}
+
+#sidebar h2 {
+  margin: 18px 12px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+#sidebar a {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  color: var(--text-h);
+  text-decoration: none;
+}
+
+#sidebar a i {
+  font-size: 11px;
+  font-style: normal;
+  opacity: 0.5;
+}
+
+#sidebar a:hover {
+  background: var(--border);
+}
+
+#sidebar a.active {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+.sandbox {
+  margin: 0 4px 6px;
+  padding: 2px 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--sandbox-bg);
+}
+
+.sandbox h2 {
+  margin-top: 12px;
+}
+
+.course-title {
+  margin-top: 26px !important;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  opacity: 0.9 !important;
+}
+
+#app {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+}
+
+#app canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.caption {
+  position: absolute;
+  bottom: 14px;
+  left: 16px;
+  margin: 0;
+  padding: 5px 9px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font: 12px var(--mono);
+  pointer-events: none;
+}
+
+.tweakpane {
+  position: absolute;
+  top: 52px;
+  left: 16px;
+  width: 256px;
+  z-index: 2;
+}
+
+/* ---- Right panel: insights and resources ---- */
+
+#panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 20px 20px 32px;
+  overflow-y: auto;
+  border-left: 1px solid var(--border);
+}
+
+#panel h2 {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+#panel section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#panel p {
+  margin: 0;
+  font-size: 14px;
+}
+
+#panel h3 {
+  margin: 10px 0 0;
+  color: var(--text-h);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+#panel section > h3:first-of-type {
+  margin-top: 0;
+}
+
+#panel strong {
+  color: var(--text-h);
+  font-weight: 600;
+}
+
+#panel pre {
+  margin: 2px 0;
+  padding: 10px 12px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--sandbox-bg);
+}
+
+#panel pre code {
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: 10.5px/1.6 var(--mono);
+  white-space: pre;
+}
+
+#panel p a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+#panel code {
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  font: 13px var(--mono);
+}
+
+#panel a {
+  color: var(--accent);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+#panel a:hover {
+  text-decoration: underline;
+}
+
+/* ---- Panel toggles ---- */
+
+#toggle-left,
+#toggle-right {
+  position: fixed;
+  top: 16px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+}
+
+/* An SVG instead of a glyph: text metrics differ from font to font, an icon
+   does not, so it sits dead centre everywhere. */
+#toggle-left svg,
+#toggle-right svg {
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The chevron points left by default, right when its panel is closed. */
+#toggle-right svg {
+  transform: rotate(180deg);
+}
+
+body.hide-left #toggle-left svg {
+  transform: rotate(180deg);
+}
+
+body.hide-right #toggle-right svg {
+  transform: none;
+}
+
+#toggle-left:hover,
+#toggle-right:hover {
+  color: var(--accent);
+}
+
+#toggle-left {
+  left: calc(var(--left) + 14px);
+}
+
+#toggle-right {
+  right: calc(var(--right) + 14px);
+}
