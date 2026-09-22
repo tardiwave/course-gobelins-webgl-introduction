@@ -16,8 +16,7 @@ export function start(root: HTMLElement) {
   // A render target is a texture the GPU is allowed to draw into.
   const target = new RenderTarget(gl, { width: 1, height: 1 })
 
-  // The fullscreen triangle of the first chapter, this time showing a texture
-  // that WebGL made itself.
+  // Fullscreen triangle that displays the render target.
   const screen = new Mesh(gl, {
     geometry: new Triangle(gl),
     program: new Program(gl, {

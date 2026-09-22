@@ -1,22 +1,8 @@
-precision highp float;
-
-uniform sampler2D tField;
+uniform sampler2D tState;
 uniform vec2 uResolution;
 uniform float uZoom;
 
 varying vec2 vUv;
-
-vec3 fieldColor(vec2 uv) {
-  // Two signed numbers per texel. There is nothing to look at in them until
-  // you decide how to look.
-  vec2 velocity = texture2D(tField, uv).xy;
-
-  float speed = length(velocity);
-
-  vec3 color = mix(DARK, BLUE, clamp(speed * 1.6, 0.0, 1.0));
-
-  return mix(color, CREAM, clamp(speed * 0.5 - 0.25, 0.0, 1.0));
-}
 
 void main() {
   bool zoomed = uZoom > -0.5;
@@ -30,7 +16,7 @@ void main() {
     return;
   }
 
-  // The field is a square texture, the frame is not.
+  // Letterboxed so each texel, one asteroid, stays square.
   float aspect = uResolution.x / uResolution.y;
   vec2 uv = vec2((local.x - 0.5) * aspect + 0.5, local.y);
 
@@ -39,5 +25,6 @@ void main() {
     return;
   }
 
-  gl_FragColor = vec4(fieldColor(uv), 1.0);
+  // Signed displacement, recentred on grey like a normal map and amplified.
+  gl_FragColor = vec4(texture2D(tState, uv).xyz * 1.6 + 0.5, 1.0);
 }

@@ -5,19 +5,11 @@ import drift from '../shaders/chunks/drift.glsl?raw'
 import vertex from '../shaders/asteroids/vertex.glsl?raw'
 import fragment from '../shaders/asteroids/fragment.glsl?raw'
 
-/**
- * A ring of asteroids, one loaded model drawn thousands of times.
- *
- * The model in public/models is a placeholder generated for this course.
- * The chapter is written for "Asteroids Pack (rocky version)" by Sebastian
- * Sosnowski, CC Attribution:
- * https://sketchfab.com/3d-models/asteroids-pack-rocky-version-adde1ecf129e4509be8af61b84bafa85
- * See public/models/CREDITS.md.
- */
+// Model credits: see public/models/CREDITS.md.
 export class Asteroids extends Transform {
   light = { value: new Vec3(1, 0.4, 0.6) }
 
-  // Off by default, like the belt's. The scene of the models chapter turns it on.
+  // 0 disables the depth fog.
   fog = { value: 0 }
 
   private elapsed = { value: 0 }
@@ -41,12 +33,10 @@ export class Asteroids extends Transform {
       random[i] = Math.random()
     }
 
-    // Loading is asynchronous, so the belt appears a moment after the planet.
     GLTFLoader.load(gl, '/models/asteroids.glb').then((gltf) => {
       if (this.disposed) return
 
-      // The pack holds ten rocks between 1 500 and 3 400 triangles. For a belt
-    // of a few thousand, the lightest one is the sensible pick.
+      // The lightest of the ten rocks, since it is drawn thousands of times.
     const geometry = gltf.meshes[1].primitives[0].geometry
       geometry.addAttribute('offset', { instanced: 1, size: 3, data: offset })
       geometry.addAttribute('random', { instanced: 1, size: 1, data: random })
@@ -54,7 +44,7 @@ export class Asteroids extends Transform {
       this.rocks = new Mesh(gl, {
         geometry,
         program: new Program(gl, {
-          // The noise library, then the shared drift formula, then the shader.
+          // GLSL has no #include: the chunks are concatenated in front of the shader.
           vertex: noise + drift + vertex,
           fragment: palette + fragment,
           uniforms: {

@@ -9,8 +9,7 @@ void main() {
   // length gives the distance from this pixel to the centre.
   float distance = length(uv);
 
-  // smoothstep is step with a soft edge, which avoids the staircase of pixels.
-  // Note the reversed edges: we want 1.0 inside, 0.0 outside.
+  // smoothstep is a step with a soft edge; reversed edges give 1.0 inside, 0.0 outside.
   float circle = smoothstep(0.35, 0.345, distance);
 
   vec3 color = mix(DARK, BLUE, circle);

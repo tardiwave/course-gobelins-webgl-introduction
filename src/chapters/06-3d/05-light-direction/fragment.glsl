@@ -6,8 +6,7 @@ varying vec2 vUv;
 varying vec3 vNormal;
 
 void main() {
-  // 1.0 where the surface faces the light, 0.0 at the terminator.
-  // max() stops the night side from going negative.
+  // 1.0 facing the light, 0.0 at the terminator; max() keeps the night side from going negative.
   float light = max(dot(normalize(vNormal), normalize(uLight)), 0.0);
 
   // Without the ambient term the night side is pure black.

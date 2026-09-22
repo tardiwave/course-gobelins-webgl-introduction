@@ -1,20 +1,16 @@
 import { Vec2 } from 'ogl'
 
-/**
- * The cursor, in the three forms a scene ever needs: texture coordinates,
- * clip coordinates, and a speed.
- */
 export class Pointer {
   /** 0 to 1 across the element, y up like a texture. */
   uv = new Vec2(0.5, 0.5)
 
-  /** -1 to 1 with y up, which is what a raycast wants. */
+  /** -1 to 1, y up, as a raycast expects. */
   clip = new Vec2()
 
   /** uv per second, measured between frames rather than between events. */
   velocity = new Vec2()
 
-  /** False while the cursor is outside, so effects can park themselves. */
+  /** False while the cursor is outside the element. */
   inside = false
 
   private element?: HTMLElement
@@ -30,9 +26,7 @@ export class Pointer {
   }
 
   update(delta: number) {
-    // Distance covered since the last frame, over the time it took. Reading a
-    // speed from one pointer event instead would give a different number on
-    // every machine.
+    // Measured per frame, not per event, so the speed is the same on every machine.
     const step = Math.max(delta, 1 / 240)
     this.velocity.copy(this.travelled).multiply(1 / step)
     this.travelled.set(0, 0)
@@ -53,8 +47,7 @@ export class Pointer {
     // Texture coordinates start at the bottom, the page starts at the top.
     const y = 1 - (event.clientY - bounds.top) / bounds.height
 
-    // The first event has no previous position, so it would read as one
-    // enormous jump.
+    // The first event has no previous position, so it would read as a huge jump.
     if (this.tracking) this.travelled.add(new Vec2(x, y)).sub(this.previous)
 
     this.previous.set(x, y)

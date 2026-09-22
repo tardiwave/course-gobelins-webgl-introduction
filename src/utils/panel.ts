@@ -1,9 +1,6 @@
 import { Pane } from 'tweakpane'
 
-/**
- * A Tweakpane panel floating over the canvas.
- * Call dispose() when the step is torn down, or the panel outlives the page.
- */
+// Call dispose() on teardown, or the panel outlives the step.
 export function createPanel(root: HTMLElement, title = 'Controls') {
   const container = document.createElement('div')
   container.className = 'tweakpane'

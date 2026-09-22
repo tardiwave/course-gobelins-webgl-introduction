@@ -1,4 +1,4 @@
-// Runs once per vertex, three times here. Its only job is gl_Position.
+// Runs once per vertex (three here) and must write gl_Position.
 attribute vec2 position;
 attribute vec2 uv;
 

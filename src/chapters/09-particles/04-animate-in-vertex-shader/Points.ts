@@ -1,7 +1,7 @@
 import { Geometry, Mesh, Program, type OGLRenderingContext } from 'ogl'
 import palette from '../../../shaders/chunks/palette.glsl?raw'
 import vertex from './vertex.glsl?raw'
-import fragment from './fragment.glsl?raw'
+import fragmentSource from './fragment.glsl?raw'
 
 export class Points extends Mesh {
   private elapsed: { value: number }
@@ -25,7 +25,7 @@ export class Points extends Mesh {
       }),
       program: new Program(gl, {
         vertex,
-        fragment: palette + fragment,
+        fragment: palette + fragmentSource,
         uniforms: {
           uPixelRatio: { value: gl.renderer.dpr },
           uTime: elapsed,
@@ -37,8 +37,7 @@ export class Points extends Mesh {
   }
 
   update(time: number) {
-    // One number sent per frame. That is the entire cost on the CPU side —
-    // the position buffer is never touched again after it is uploaded.
+    // Only the time is sent each frame: the position buffer is never re-uploaded.
     this.elapsed.value = time
   }
 

@@ -45,8 +45,7 @@ export function start(root: HTMLElement) {
 
   root.addEventListener('pointermove', onPointerMove)
 
-  // A panel can read as well as write. These are updated every frame and the
-  // bindings below poll them.
+  // Updated every frame; the read-only bindings below poll them.
   const readouts = { fps: 0, frame: 0 }
 
   const panel = createPanel(root, 'Debug')

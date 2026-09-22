@@ -21,25 +21,22 @@ mat3 rotationY(float angle) {
 }
 
 void main() {
-  // Each rock tumbles on itself…
+  // Each rock spins on itself.
   mat3 spin = rotationY(uTime * (0.2 + random * 0.7) + random * 6.28);
 
-  // …and the whole belt turns, inner rocks faster than outer ones. The speed
-  // is read from the RESTING radius, so a rock that wanders outwards does not
-  // slow down and fall out of formation.
+  // The belt turns, inner rocks faster. Speed uses the resting radius,
+  // so a rock that drifts outwards does not fall out of formation.
   float radius = length(offset.xz);
   mat3 orbit = rotationY(uTime * (0.4 / radius));
 
-  // Nothing in space runs on a perfect circle. Noise nudges each rock in and
-  // out of the ring and above and below it, slowly.
+  // Noise nudges each rock in and out of the ring, and above and below it.
   vec3 base = offset + asteroidDrift(offset, random, uTime);
 
   vec3 local = spin * position * (0.010 + random * 0.024);
 
   vec4 viewPosition = modelViewMatrix * vec4(orbit * (local + base), 1.0);
 
-  // The same depth reading as the belt, over the same two distances, so the
-  // rocks fade out exactly like the particles they replaced.
+  // 0 at near, 1 at far: the fragment shader uses it for fog.
   vFog = smoothstep(3.0, 7.5, -viewPosition.z);
 
   vUv = uv;

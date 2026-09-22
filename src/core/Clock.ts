@@ -1,7 +1,3 @@
-/**
- * The time a scene runs on. One object, updated once per frame, so everything
- * that moves reads the same numbers.
- */
 export class Clock {
   /** Seconds since the step opened. */
   time = 0
@@ -15,8 +11,7 @@ export class Clock {
   update(now: number) {
     this.time = (now - this.origin) / 1000
 
-    // Capped: a tab left in the background comes back with a delta of several
-    // seconds, and anything integrating it would take one enormous step.
+    // Capped: a background tab comes back with several seconds of delta.
     this.delta = Math.min((now - this.previous) / 1000, 1 / 30)
     this.previous = now
   }

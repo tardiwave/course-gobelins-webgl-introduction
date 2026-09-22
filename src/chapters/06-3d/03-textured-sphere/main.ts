@@ -9,7 +9,7 @@ export function start(root: HTMLElement) {
   const gl = renderer.gl
   root.append(gl.canvas)
 
-  // The same dark as DARK in the palette.
+  // DARK from the palette.
   gl.clearColor(0.055, 0.059, 0.067, 1)
 
   const camera = new Camera(gl, { fov: 45, near: 0.1, far: 100 })
@@ -43,7 +43,7 @@ export function start(root: HTMLElement) {
     const time = (now - origin) / 1000
 
     mesh.rotation.y = time * 0.15
-    // A slight axis tilt, like the real Earth.
+    // Axis tilt, like the real Earth.
     mesh.rotation.z = 0.41
 
     orbit.update()

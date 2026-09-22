@@ -27,17 +27,16 @@ export function start(root: HTMLElement) {
   observer.observe(root)
 
   const program = new Program(gl, {
-    // height() is pasted in front of BOTH shaders: one lifts the surface, the
-    // other measures its slope, and they have to agree.
+    // GLSL has no #include: height() is concatenated in front of both shaders.
     vertex: noise + heightSource + vertexSource,
     fragment: precision + noise + palette + heightSource + fragmentSource,
     uniforms: {
       tMap: { value: loadTexture(gl, '/textures/earth.png') },
-      // Black is sea level, white is the Himalaya, in the same projection as
-      // the colour map. Source: NASA Blue Marble, via the three.js textures.
+      // Black is sea level, white the Himalaya, same projection as the colour map.
+      // Source: NASA Blue Marble, via the three.js textures.
       tHeight: { value: loadTexture(gl, '/textures/earth-height.png') },
       tNoise: { value: loadTexture(gl, '/textures/noise.jpg', true) },
-      // The shader needs the map's size to know how far one texel reaches.
+      // A shader cannot query a texture's size, so pass it in.
       uMapSize: { value: new Vec2(2048, 1024) },
       uLight: { value: new Vec3(1, 0.4, 0.6).normalize() },
       uSource: { value: 0 },

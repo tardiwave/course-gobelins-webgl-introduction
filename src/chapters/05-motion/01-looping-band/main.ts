@@ -8,7 +8,7 @@ export function start(root: HTMLElement) {
   const gl = renderer.gl
   root.append(gl.canvas)
 
-  // The same dark as DARK in the palette.
+  // Keep in sync with DARK in the palette.
   gl.clearColor(0.055, 0.059, 0.067, 1)
 
   const program = new Program(gl, {

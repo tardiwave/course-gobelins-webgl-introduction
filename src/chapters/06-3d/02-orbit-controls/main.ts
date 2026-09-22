@@ -3,13 +3,12 @@ import palette from '../../../shaders/chunks/palette.glsl?raw'
 import vertex from './vertex.glsl?raw'
 import fragmentSource from './fragment.glsl?raw'
 
-// The same sphere as the previous step, now with a camera you can move.
 export function start(root: HTMLElement) {
   const renderer = new Renderer({ dpr: Math.min(devicePixelRatio, 2), webgl: 1 })
   const gl = renderer.gl
   root.append(gl.canvas)
 
-  // The same dark as DARK in the palette.
+  // DARK from the palette.
   gl.clearColor(0.055, 0.059, 0.067, 1)
 
   const camera = new Camera(gl, { fov: 45, near: 0.1, far: 100 })
@@ -41,7 +40,7 @@ export function start(root: HTMLElement) {
   frame = requestAnimationFrame(render)
 
   return () => {
-    // Always give back the listeners a step added.
+    // Remove the listeners Orbit added.
     orbit.remove()
     cancelAnimationFrame(frame)
     observer.disconnect()

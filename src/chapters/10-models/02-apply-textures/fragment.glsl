@@ -5,8 +5,7 @@ varying vec2 vUv;
 varying vec3 vNormal;
 
 void main() {
-  // The model came with UVs: whoever made it decided how its surface unwraps,
-  // and the texture was painted against that decision. All we do is read it.
+  // The UVs come with the model: its texture was painted against them.
   vec3 color = texture2D(tMap, vUv).rgb;
 
   float light = max(dot(normalize(vNormal), normalize(uLight)), 0.0);

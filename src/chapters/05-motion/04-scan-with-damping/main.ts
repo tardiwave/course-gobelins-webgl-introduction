@@ -1,8 +1,9 @@
 import { Mesh, Program, Renderer, Triangle, Vec2 } from 'ogl'
 import { loadTexture } from '../../../utils/texture.ts'
+import { damp } from '../../../utils/maths.ts'
 import palette from '../../../shaders/chunks/palette.glsl?raw'
-import uvHelpers from '../../../shaders/chunks/uv.glsl?raw'
-import vertex from '../../../shaders/chunks/screen.glsl?raw'
+import uv from '../../../shaders/chunks/uv.glsl?raw'
+import screenVertex from '../../../shaders/chunks/screen.glsl?raw'
 import fragmentSource from './fragment.glsl?raw'
 
 export function start(root: HTMLElement) {
@@ -21,8 +22,8 @@ export function start(root: HTMLElement) {
   const current = new Vec2(0.5, 0.5) // where the scan has got to
 
   const program = new Program(gl, {
-    vertex,
-    fragment: palette + uvHelpers + fragmentSource,
+    vertex: screenVertex,
+    fragment: palette + uv + fragmentSource,
     uniforms: {
       tMap: { value: loadTexture(gl, '/textures/earth.png') },
       uResolution: { value: new Vec2() },
@@ -45,12 +46,16 @@ export function start(root: HTMLElement) {
   root.addEventListener('pointermove', onPointerMove)
 
   let frame = 0
-  const render = () => {
-    // current += (target - current) * 0.06
-    // A sixteenth of the remaining gap per frame. The scan never quite
-    // arrives, which is exactly what makes it feel like it has weight.
-    current.x += (target.x - current.x) * 0.06
-    current.y += (target.y - current.y) * 0.06
+  let previous = performance.now()
+
+  const render = (now: number) => {
+    // Capped, or a tab returning from the background jumps in one frame.
+    const delta = Math.min(Math.max(now - previous, 0), 33) / 1000
+    previous = now
+
+    // 3.7 gives 6% of the gap per frame at 60 fps.
+    current.x = damp(current.x, target.x, 3.7, delta)
+    current.y = damp(current.y, target.y, 3.7, delta)
 
     program.uniforms.uResolution.value.set(renderer.width, renderer.height)
     renderer.render({ scene: mesh })

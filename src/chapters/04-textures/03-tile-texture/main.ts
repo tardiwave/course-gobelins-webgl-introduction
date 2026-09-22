@@ -10,7 +10,7 @@ export function start(root: HTMLElement) {
   const gl = renderer.gl
   root.append(gl.canvas)
 
-  // The same dark as DARK in the palette.
+  // Keep in sync with DARK in the palette.
   gl.clearColor(0.055, 0.059, 0.067, 1)
 
   const program = new Program(gl, {
@@ -18,8 +18,7 @@ export function start(root: HTMLElement) {
     // GLSL has no #include, so the shared files are pasted in front.
     fragment: palette + fragmentSource,
     uniforms: {
-      // true asks for REPEAT on both axes. This noise was authored to tile,
-      // so opposite edges already match.
+      // true = REPEAT wrapping; the image must be seamless for tiles to match.
       tMap: { value: loadTexture(gl, '/textures/noise.jpg', true) },
       uResolution: { value: new Vec2() },
       uRepeat: { value: 2 },

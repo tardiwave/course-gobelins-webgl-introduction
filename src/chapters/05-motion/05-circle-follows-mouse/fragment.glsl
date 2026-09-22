@@ -8,8 +8,7 @@ varying vec2 vUv;
 void main() {
   float aspect = uResolution.x / uResolution.y;
 
-  // Both the pixel and the cursor are corrected the same way,
-  // otherwise the circle turns into an ellipse.
+  // Correct the pixel and the cursor the same way, or the circle becomes an ellipse.
   vec2 uv = vec2(vUv.x * aspect, vUv.y);
   vec2 mouse = vec2(uMouse.x * aspect, uMouse.y);
 

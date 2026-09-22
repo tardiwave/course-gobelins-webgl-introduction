@@ -10,10 +10,7 @@ void main() {
 
   vec3 earth = texture2D(tMap, uv).rgb;
 
-  // The second texture is not used as a colour but as a mask: its brightness
-  // decides where the first one shows through.
-  // The noise image is fine grained, so we read it across a smaller area:
-  // magnifying it turns the speckle into cloud-sized masses.
+  // The noise is a mask, not a colour; * 0.5 samples a smaller area, so its grain is enlarged.
   float noise = texture2D(tNoise, vUv * 0.5).r;
   float clouds = smoothstep(0.45, 0.68, noise);
 

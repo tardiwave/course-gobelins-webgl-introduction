@@ -4,11 +4,6 @@ import palette from '../shaders/chunks/palette.glsl?raw'
 import vertex from '../shaders/stars/vertex.glsl?raw'
 import fragment from '../shaders/stars/fragment.glsl?raw'
 
-/**
- * The distant sky. Each point draws the smooth circle of the drawing chapter
- * inside its own sprite, using gl_PointCoord. It turns very slowly on its own:
- * parallax is most of what tells the eye how far away something is.
- */
 export class Stars extends Mesh {
   constructor(gl: OGLRenderingContext, count = 6000) {
     super(gl, {

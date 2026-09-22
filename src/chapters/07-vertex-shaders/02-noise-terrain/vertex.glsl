@@ -14,21 +14,18 @@ varying vec3 vLocal;
 // height(), lift() and frame() come from height.glsl.
 
 void main() {
-  // Feeding noise the position anchors the relief to the sphere instead of
-  // letting it slide across: the surface itself is the coordinate.
+  // Noise sampled at the position, so the relief is anchored to the sphere.
   vec3 n = normalize(position);
 
   vec3 east, north;
   frame(n, east, north);
 
-  // The one thing only a vertex shader can do: move the geometry.
   vec3 displaced = n + n * lift(n);
 
   vUv = uv;
   vLocal = n;
 
-  // The frame travels to the fragment shader already rotated into the world,
-  // so the shading there only has to say how much to tilt.
+  // The frame is rotated into world space before being passed on.
   vNormal = normalize(mat3(modelMatrix) * n);
   vTangent = normalize(mat3(modelMatrix) * east);
   vBitangent = normalize(mat3(modelMatrix) * north);

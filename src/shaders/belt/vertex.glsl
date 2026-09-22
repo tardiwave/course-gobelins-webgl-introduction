@@ -12,8 +12,7 @@ varying float vFog;
 void main() {
   vec3 offset = position;
 
-  // Inner particles go round faster than outer ones, the way a real ring
-  // behaves. The radius is already in the position we generated.
+  // Inner particles orbit faster than outer ones, like a real ring.
   float radius = length(offset.xz);
   float angle = uTime * (0.5 / radius);
   float c = cos(angle);
@@ -22,8 +21,7 @@ void main() {
 
   vec4 viewPosition = modelViewMatrix * vec4(offset, 1.0);
 
-  // How deep this particle sits, between the two distances we call near and
-  // far. Nothing is done with it here — the fragment shader decides.
+  // 0 at near, 1 at far: the fragment shader uses it for fog.
   vFog = smoothstep(3.0, 7.5, -viewPosition.z);
 
   gl_PointSize = (0.4 + random * 1.4) * 20.0 * uPixelRatio / -viewPosition.z;

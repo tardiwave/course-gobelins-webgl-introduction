@@ -10,7 +10,7 @@ void main() {
 
   vec3 color = texture2D(tMap, vUv).rgb * (light + 0.06);
 
-  // A tint following the wave, so the movement is readable even head on.
+  // Tint by height so the wave reads even head on.
   color = mix(color, BLUE, smoothstep(0.2, 1.0, vHeight) * 0.35);
 
   gl_FragColor = vec4(color, 1.0);

@@ -8,13 +8,6 @@ import haloFragment from '../shaders/planet/halo.glsl?raw'
 
 const HALO_SCALE = 1.25
 
-/**
- * The planet exactly as the 3D chapter left it: normal-mapped ground, animated
- * clouds, lit halo — three spheres sharing one geometry and one light.
- *
- * It is a Transform, so it drops into any scene with setParent, and it knows
- * how to move itself. Shaders come from the files next to this one.
- */
 export class Planet extends Transform {
   /** The direction the light comes from, shared by the three shaders. */
   light = { value: new Vec3(1, 0.4, 0.6) }

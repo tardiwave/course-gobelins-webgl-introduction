@@ -10,8 +10,7 @@ export function start(root: HTMLElement) {
 
   const scene = new SkyScene(gl)
 
-  // The one line this step is about. It has been sitting at 0 since the belt
-  // was written — see src/shaders/belt.frag.glsl.
+  // The fog itself is in src/shaders/belt/fragment.glsl, off (0) by default.
   scene.belt.fog.value = 1
 
   const orbit = new Orbit(camera, { element: gl.canvas })

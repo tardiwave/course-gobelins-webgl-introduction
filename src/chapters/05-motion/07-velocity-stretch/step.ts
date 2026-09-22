@@ -6,18 +6,18 @@ const step: Step = {
   insight: `## La vitesse était déjà là
 
 \`\`\`ts
-const dx = (target.x - current.x) * 0.08
-const dy = (target.y - current.y) * 0.08
+const x = damp(current.x, target.x, 5, delta)
+const y = damp(current.y, target.y, 5, delta)
 
-current.x += dx
-current.y += dy
-
-velocity.set(dx, dy)
+velocity.set((x - current.x) / delta, (y - current.y) / delta)
+current.set(x, y)
 \`\`\`
 
-La distance parcourue en une frame **est** la vitesse. Pas de dérivée, pas de
-minuteur, pas d'historique : c'est la différence qu'il fallait de toute façon
-calculer pour l'amortissement.
+La distance parcourue pendant la frame, divisée par sa durée, **est** la
+vitesse. Pas de dérivée, pas d'historique : c'est la différence qu'il fallait de
+toute façon calculer pour l'amortissement. Diviser par \`delta\` la rend
+indépendante de l'écran : sans ça, la même trajectoire donnerait une vitesse
+deux fois plus faible sur un écran 120 Hz.
 
 C'est un bon exemple d'une habitude qui paie : quand une grandeur vous manque,
 regardez d'abord si elle n'est pas déjà un sous-produit de ce que vous faites.

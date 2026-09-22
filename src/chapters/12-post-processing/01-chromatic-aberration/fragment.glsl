@@ -3,8 +3,7 @@ uniform sampler2D tScene;
 varying vec2 vUv;
 
 void main() {
-  // A real lens does not focus every wavelength at the same distance, so the
-  // three channels land slightly apart — more so away from the centre.
+  // The three channels drift apart towards the edges, like a lens.
   vec2 offset = (vUv - 0.5) * 0.004;
 
   vec3 color = vec3(

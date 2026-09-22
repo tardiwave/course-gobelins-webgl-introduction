@@ -12,7 +12,7 @@ export function start(root: HTMLElement) {
   const gl = renderer.gl
   root.append(gl.canvas)
 
-  // The same dark as DARK in the palette.
+  // DARK from the palette.
   gl.clearColor(0.055, 0.059, 0.067, 1)
 
   const camera = new Camera(gl, { fov: 45, near: 0.1, far: 100 })
@@ -27,8 +27,7 @@ export function start(root: HTMLElement) {
   observer.observe(root)
 
   const program = new Program(gl, {
-    // The noise library goes in front of BOTH shaders: one moves the surface,
-    // the other colours it, and they have to agree.
+    // GLSL has no #include: the chunks are concatenated in front of both shaders.
     vertex: noise + heightSource + vertexSource,
     fragment: precision + noise + palette + heightSource + fragmentSource,
     uniforms: {

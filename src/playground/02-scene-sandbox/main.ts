@@ -4,6 +4,8 @@ import palette from '../../shaders/chunks/palette.glsl?raw'
 import vertex from './vertex.glsl?raw'
 import fragmentSource from './fragment.glsl?raw'
 
+export const title = 'Scene v1.0'
+
 export function start(root: HTMLElement) {
   const renderer = new Renderer({ dpr: Math.min(devicePixelRatio, 2), webgl: 1 })
   const gl = renderer.gl

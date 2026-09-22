@@ -10,8 +10,7 @@ void main() {
   // abs folds the space in half, so we only have one corner to think about.
   vec2 distance = abs(uv) - 0.35;
 
-  // A pixel is inside the square when it is inside on BOTH axes,
-  // which is exactly what max tests here.
+  // Inside the square means inside on both axes, which max tests.
   float square = 1.0 - step(0.0, max(distance.x, distance.y));
 
   vec3 color = mix(DARK, BLUE, square);

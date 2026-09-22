@@ -1,12 +1,5 @@
 import { Geometry, type OGLRenderingContext } from 'ogl'
 
-/**
- * Points scattered evenly over a hollow sphere.
- *
- * acos() is what makes it even: two plain randoms for longitude and latitude
- * crowd the poles, because equal steps of latitude cover less and less sphere
- * as you climb.
- */
 export class StarsGeometry extends Geometry {
   constructor(gl: OGLRenderingContext, count = 6000) {
     const position = new Float32Array(count * 3)
@@ -14,6 +7,7 @@ export class StarsGeometry extends Geometry {
 
     for (let i = 0; i < count; i++) {
       const theta = Math.random() * Math.PI * 2
+      // acos() spreads points evenly: a plain random latitude would crowd the poles.
       const phi = Math.acos(Math.random() * 2 - 1)
       const radius = 25 + Math.random() * 15
 

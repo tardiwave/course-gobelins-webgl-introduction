@@ -13,8 +13,7 @@ export function start(root: HTMLElement) {
 
   const mouse = new Vec2(0.5, 0.5)
 
-  // Every number the shader reads lives here, so the panel and the shader are
-  // looking at the same objects.
+  // The panel edits these uniform objects directly.
   const program = new Program(gl, {
     vertex,
     fragment: palette + fragmentSource,
@@ -60,7 +59,7 @@ export function start(root: HTMLElement) {
   })
 
   panel.pane.addBinding(settings, 'grid').on('change', (event) => {
-    // GLSL ES 1.00 has no bool uniform worth the trouble: 0.0 or 1.0 is enough.
+    // Send 0.0 or 1.0 as a float instead of a bool uniform.
     program.uniforms.uGrid.value = event.value ? 1 : 0
   })
 

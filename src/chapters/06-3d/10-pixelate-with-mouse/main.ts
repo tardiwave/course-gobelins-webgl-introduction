@@ -1,5 +1,6 @@
 import { Camera, Mesh, Orbit, Program, Raycast, Renderer, Sphere, Vec2, Vec3 } from 'ogl'
 import { loadTexture } from '../../../utils/texture.ts'
+import { damp } from '../../../utils/maths.ts'
 import palette from '../../../shaders/chunks/palette.glsl?raw'
 import vertex from './vertex.glsl?raw'
 import fragmentSource from './fragment.glsl?raw'
@@ -9,7 +10,7 @@ export function start(root: HTMLElement) {
   const gl = renderer.gl
   root.append(gl.canvas)
 
-  // The same dark as DARK in the palette.
+  // DARK from the palette.
   gl.clearColor(0.055, 0.059, 0.067, 1)
 
   const camera = new Camera(gl, { fov: 45, near: 0.1, far: 100 })
@@ -23,11 +24,10 @@ export function start(root: HTMLElement) {
   const observer = new ResizeObserver(resize)
   observer.observe(root)
 
-  // The cursor in clip space, -1 to 1 on both axes: what a ray needs.
+  // Cursor in clip space, -1 to 1 on both axes, as a ray expects.
   const pointer = new Vec2(0, 0)
 
-  // Where the cursor lands ON the sphere, in the sphere's own space.
-  // Starts over land, so the effect is visible before the cursor moves.
+  // Where the cursor hits the sphere, in the sphere's own space.
   const point = new Vec3(0.3, 0.45, 0.84)
   const target = new Vec3(0.3, 0.45, 0.84)
 
@@ -62,9 +62,12 @@ export function start(root: HTMLElement) {
 
   let frame = 0
   const origin = performance.now()
+  let previous = origin
 
   const render = (now: number) => {
     const time = (now - origin) / 1000
+    const delta = Math.min(Math.max(now - previous, 0), 33) / 1000
+    previous = now
 
     mesh.rotation.y = time * 0.15
     mesh.rotation.z = 0.41
@@ -73,16 +76,13 @@ export function start(root: HTMLElement) {
 
     raycast.castMouse(camera, pointer)
 
-    // Triangle-accurate, and it hands back the hit in the mesh's own space —
-    // which is exactly the space the shader compares against.
-    // hit is only set once something has actually been hit, hence the check.
+    // The hit is in the mesh's own space, like vLocal; undefined until something is hit.
     const [hit] = raycast.intersectMeshes([mesh])
     if (hit?.hit?.localPoint) target.copy(hit.hit.localPoint).normalize()
 
-    // Damped, as always.
-    point.x += (target.x - point.x) * 0.12
-    point.y += (target.y - point.y) * 0.12
-    point.z += (target.z - point.z) * 0.12
+    point.x = damp(point.x, target.x, 7.7, delta)
+    point.y = damp(point.y, target.y, 7.7, delta)
+    point.z = damp(point.z, target.z, 7.7, delta)
 
     renderer.render({ scene: mesh, camera })
     frame = requestAnimationFrame(render)

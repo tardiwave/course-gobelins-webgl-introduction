@@ -10,7 +10,7 @@ import fragmentSource from './fragment.glsl?raw'
 export function start(root: HTMLElement) {
   const { renderer, gl, viewport, loop } = mountCanvas(root)
 
-  // The whole simulation is in src/objects/Fluid.ts — worth opening.
+  // The simulation lives in src/objects/Fluid.ts.
   const fluid = new Fluid(renderer)
   const pointer = new Pointer()
   pointer.attach(gl.canvas as HTMLCanvasElement)
@@ -42,8 +42,7 @@ export function start(root: HTMLElement) {
     pointer.update(delta)
     fluid.update(pointer, delta, viewport.aspect)
 
-    // The field swaps its two targets every frame, so the texture to read is
-    // never the same object twice in a row.
+    // The field swaps targets every frame: read fluid.texture each frame.
     mesh.program.uniforms.tField.value = fluid.texture
 
     renderer.render({ scene: mesh })

@@ -1,8 +1,7 @@
-// Runs once per covered pixel. Its only job is to fill gl_FragColor.
+// Runs once per covered pixel and must write gl_FragColor.
 precision mediump float;
 
-// Three vertices carried a UV, yet this is a smooth gradient: the GPU
-// interpolates a varying across the triangle.
+// The GPU interpolates a varying across the triangle, hence the gradient.
 varying vec2 vUv;
 
 void main() {

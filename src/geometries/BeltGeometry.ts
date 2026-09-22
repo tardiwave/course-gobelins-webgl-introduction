@@ -1,11 +1,5 @@
 import { Geometry, type OGLRenderingContext } from 'ogl'
 
-/**
- * A ring of points around the origin, one vertex each.
- *
- * The shape comes entirely from how the positions are drawn: an angle and a
- * radius instead of three independent numbers. The shader only makes it turn.
- */
 export class BeltGeometry extends Geometry {
   constructor(gl: OGLRenderingContext, count = 4000) {
     const position = new Float32Array(count * 3)

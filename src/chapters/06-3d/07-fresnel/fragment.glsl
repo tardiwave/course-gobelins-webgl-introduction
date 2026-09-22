@@ -9,11 +9,10 @@ varying vec3 vNormal;
 varying vec3 vTangent;
 varying vec3 vBitangent;
 varying vec3 vView;
-varying float vFade;
 
 void main() {
   vec3 mapped = texture2D(tNormal, vUv).rgb * 2.0 - 1.0;
-  mapped.xy *= uStrength * vFade;
+  mapped.xy *= uStrength;
 
   vec3 surface = normalize(vNormal);
   vec3 normal = normalize(vTangent * mapped.x + vBitangent * mapped.y + surface * mapped.z);
@@ -22,13 +21,11 @@ void main() {
 
   vec3 color = texture2D(tMap, vUv).rgb * (light + 0.06);
 
-  // 1.0 at the silhouette, 0.0 facing us. pow() tightens the rim.
-  // The GEOMETRIC normal, not the mapped one: the silhouette belongs to the
-  // sphere, not to the texture painted on it.
+  // 1.0 at the silhouette, 0.0 facing us; pow() tightens the rim.
+  // Use the geometric normal, not the mapped one: the silhouette belongs to the sphere.
   float fresnel = pow(1.0 - max(dot(surface, normalize(vView)), 0.0), uRim);
 
-  // Adding rather than mixing keeps it reading as light, not as paint.
-  // Multiplying by light keeps the night side from glowing.
+  // Multiplied by light so the night side does not glow.
   color += BLUE * fresnel * light;
 
   gl_FragColor = vec4(color, 1.0);

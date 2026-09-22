@@ -1,5 +1,4 @@
-// palette.glsl asks for mediump, which is right for colours and wrong for a
-// velocity. The last declaration wins, so this one takes over.
+// palette.glsl sets mediump, too coarse for a velocity; the last declaration wins.
 precision highp float;
 
 uniform sampler2D tField;
@@ -7,8 +6,6 @@ uniform sampler2D tField;
 varying vec2 vUv;
 
 void main() {
-  // What the field holds is two signed numbers per texel. There is nothing to
-  // look at in them until you decide how to look.
   vec2 velocity = texture2D(tField, vUv).xy;
 
   float speed = length(velocity);

@@ -1,12 +1,9 @@
-// Must match core/thumbnails.glsl, which draws the boxes.
+// Must match shaders/chunks/thumbnails.glsl, which draws the boxes.
 const SIZE = 0.16
 const GAP = 0.015
 const BOTTOM = 0.025
 
-/**
- * Click handling for the debug thumbnails: click one to blow it up, click
- * again to go back. `zoom.value` is the slot on show, or -1 for none.
- */
+// `zoom.value` is the enlarged slot, or -1 for none.
 export function createThumbnails(element: HTMLElement, count: number) {
   const zoom = { value: -1 }
 

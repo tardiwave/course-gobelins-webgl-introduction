@@ -10,7 +10,7 @@ export function start(root: HTMLElement) {
   const gl = renderer.gl
   root.append(gl.canvas)
 
-  // The same dark as DARK in the palette.
+  // DARK from the palette.
   gl.clearColor(0.055, 0.059, 0.067, 1)
 
   const camera = new Camera(gl, { fov: 45, near: 0.1, far: 100 })
@@ -28,8 +28,7 @@ export function start(root: HTMLElement) {
 
   const scene = new Transform()
 
-  // The light is a direction and nothing else. One object, shared by every
-  // shader that needs it, so they can never disagree.
+  // A light is just a direction. This object is shared by reference by every shader using it.
   const light = { value: new Vec3(1, 0.4, 0.6) }
 
   const planet = new Mesh(gl, {
@@ -46,7 +45,7 @@ export function start(root: HTMLElement) {
   })
   planet.setParent(scene)
 
-  // OGL ships a few debug helpers. This one draws three coloured axes.
+  // OGL debug helper: draws three coloured axes.
   const helper = new AxesHelper(gl, { size: 0.6 })
   helper.setParent(scene)
 
@@ -73,8 +72,7 @@ export function start(root: HTMLElement) {
 
     light.value.set(Math.cos(settings.angle), 0.4, Math.sin(settings.angle)).normalize()
 
-    // Parked where the light comes from and aimed at the centre, so its blue
-    // Z axis lies along the light vector.
+    // Placed on the light direction and aimed at the centre: its blue Z axis is the light vector.
     helper.position.copy(light.value).multiply(1.9)
     helper.lookAt([0, 0, 0])
 

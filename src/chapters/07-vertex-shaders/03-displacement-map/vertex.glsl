@@ -17,13 +17,12 @@ varying vec3 vLocal;
 void main() {
   vec3 n = normalize(position);
 
-  // The surface's own frame: out, east, north. The fragment shader tilts the
-  // normal inside it.
+  // cross() is zero at the poles and normalize(0) is NaN: use another axis there.
   vec3 axis = abs(n.y) > 0.999 ? vec3(0.0, 0.0, 1.0) : vec3(0.0, 1.0, 0.0);
   vec3 east = normalize(cross(axis, n));
   vec3 north = cross(n, east);
 
-  // texture2D in a VERTEX shader, which is what turns an image into geometry.
+  // texture2D in a vertex shader: the image becomes geometry.
   vec3 displaced = n + n * height(uv) * uAmplitude;
 
   vUv = uv;

@@ -8,8 +8,7 @@ void main() {
 
   float radius = length(uv);
 
-  // A circle with no edge: exp() never reaches zero, so the shape dissolves
-  // outwards instead of stopping. Bigger number, tighter glow.
+  // exp() never reaches zero, so there is no hard edge. Bigger factor, tighter glow.
   float circle = exp(-radius * 4.0);
 
   gl_FragColor = vec4(mix(DARK, CREAM, circle), 1.0);

@@ -7,13 +7,11 @@ varying vec2 vUv;
 
 const float PI = 3.14159265;
 
-// The 2D circle of the drawing chapter, with one more coordinate.
 float sdSphere(vec3 p, float radius) {
   return length(p) - radius;
 }
 
-// Where each sphere is at this instant. Written as functions because the
-// shading needs them again after the ray has landed.
+// Functions, because the shading needs the centres again after the hit.
 vec3 centreA() {
   return vec3(-sin(uTime * 0.6) * 1.25, 0.0, 0.0);
 }
@@ -22,12 +20,7 @@ vec3 centreB() {
   return vec3(sin(uTime * 0.6) * 1.25, sin(uTime * 0.9) * 0.15, 0.0);
 }
 
-/**
- * The whole scene as one function: give it a point, it answers how far the
- * nearest surface is. The second component is the smooth-union blend — 1 next
- * to the big sphere, 0 next to the small one — which is what lets the shading
- * know whose texture it is standing on.
- */
+// x: distance to the nearest surface. y: blend, 1 near the big sphere, 0 near the small.
 vec2 map(vec3 p) {
   float a = sdSphere(p - centreA(), 0.75);
   float b = sdSphere(p - centreB(), 0.55);
@@ -38,7 +31,7 @@ vec2 map(vec3 p) {
   return vec2(mix(b, a, h) - k * h * (1.0 - h), h);
 }
 
-// No normal attribute either: the gradient of the distance field IS the normal.
+// The gradient of the distance field is the normal.
 vec3 normalAt(vec3 p) {
   vec2 e = vec2(0.0015, 0.0);
 
@@ -53,8 +46,7 @@ void main() {
   vec2 uv = vUv * 2.0 - 1.0;
   uv.x *= uResolution.x / uResolution.y;
 
-  // The camera orbits on a sphere of its own: a longitude and a latitude,
-  // both accumulated by dragging.
+  // Longitude and latitude of the camera, accumulated by dragging.
   float yaw = uOrbit.x;
   float pitch = clamp(uOrbit.y, -1.2, 1.2);
 
@@ -69,8 +61,7 @@ void main() {
   vec3 up = cross(forward, right);
   vec3 direction = normalize(forward * 1.7 + right * uv.x + up * uv.y);
 
-  // Sphere tracing: step along the ray by exactly the distance the field says
-  // is safe. Never overshoots, and in empty space the steps are huge.
+  // Sphere tracing: step by the distance the field says is safe, so it never overshoots.
   float travelled = 0.0;
   float hit = -1.0;
   float blend = 0.0;
@@ -96,8 +87,7 @@ void main() {
     vec3 p = origin + direction * hit;
     vec3 normal = normalAt(p);
 
-    // No texture: the blend is enough to tell the two volumes apart, and it
-    // cross-fades on its own in the neck where they have merged.
+    // The blend colours the two volumes and cross-fades where they merge.
     vec3 ground = mix(GRAY * 0.7, BLUE, blend);
 
     vec3 light = normalize(vec3(0.6, 0.7, 0.4));

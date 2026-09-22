@@ -1,10 +1,5 @@
 import type { Camera, Renderer } from 'ogl'
 
-/**
- * The size of the drawing area, and everything that has to follow it: the
- * renderer, the camera's aspect, and anything asking how many pixels wide the
- * canvas is.
- */
 export class Viewport {
   width = 0
   height = 0
@@ -29,7 +24,7 @@ export class Viewport {
     return this.width / this.height
   }
 
-  /** The canvas size in real pixels, which is what a render target needs. */
+  /** Canvas size in device pixels, as a render target needs. */
   get pixelWidth() {
     return Math.round(this.width * this.renderer.dpr)
   }

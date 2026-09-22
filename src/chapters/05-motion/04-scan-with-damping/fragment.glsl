@@ -8,17 +8,14 @@ varying vec2 vUv;
 void main() {
   vec2 uv = cover(vUv, uResolution, uTextureSize);
 
-  // Still the cursor — except JavaScript now hands us a value that runs after
-  // it instead of the raw one. The shader is none the wiser.
+  // Damped in JavaScript; the shader only sees the result.
   float position = uMouse.x;
 
   float width = 0.12;
   float band = smoothstep(width, width - 0.02, abs(vUv.x - position));
 
   float size = 70.0;
-  // A grid of squares ON SCREEN. Snapping the texture coordinates directly
-  // would give rectangles, because the map is twice as wide as it is tall and
-  // cover() rescales the two axes differently.
+  // Square cells on screen: cover() scales the two texture axes differently.
   vec2 cells = vec2(size * uResolution.x / uResolution.y, size);
   vec2 snapped = (floor(vUv * cells) + 0.5) / cells;
   vec2 pixelated = cover(snapped, uResolution, uTextureSize);

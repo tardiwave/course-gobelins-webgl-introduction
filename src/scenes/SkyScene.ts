@@ -3,10 +3,6 @@ import { Belt } from '../objects/Belt.ts'
 import { Stars } from '../objects/Stars.ts'
 import type { OGLRenderingContext } from 'ogl'
 
-/**
- * SpaceScene plus a belt and a distant sky. Extending it rather than rewriting
- * it is the whole reason these are classes.
- */
 export class SkyScene extends SpaceScene {
   belt: Belt
   stars: Stars

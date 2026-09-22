@@ -1,7 +1,7 @@
 import './style.css'
 import type { Step } from './core/step.ts'
 
-type Module = { start: (root: HTMLElement) => () => void }
+type Module = { start: (root: HTMLElement) => () => void; title?: string }
 type Page = {
   slug: string
   chapter: string
@@ -10,8 +10,8 @@ type Page = {
   step: Step
 }
 
-// A chapter folder holds a main.ts (the WebGL) and a step.ts (what the panels
-// show). A playground folder is only code — it is yours, not course material.
+// A chapter folder holds main.ts (the WebGL) and step.ts (the notes).
+// A playground folder has no step.ts: its main.ts exports its own title.
 const stepModules = import.meta.glob<Module>('./chapters/*/*/main.ts', { eager: true })
 const stepMeta = import.meta.glob<Step>('./chapters/*/*/step.ts', { eager: true, import: 'default' })
 const playgroundModules = import.meta.glob<Module>('./playground/*/main.ts', { eager: true })
@@ -19,8 +19,8 @@ const playgroundModules = import.meta.glob<Module>('./playground/*/main.ts', { e
 // Chapters whose name does not survive a plain capitalisation.
 const NAMES: Record<string, string> = {
   '06-3d': '3D',
-  '11-post-processing': 'Post-processing',
-  '12-gpgpu': 'GPGPU',
+  '12-post-processing': 'Post-processing',
+  '13-gpgpu': 'GPGPU',
 }
 
 const label = (name: string) => {
@@ -52,7 +52,7 @@ const sandboxes: Page[] = Object.entries(playgroundModules)
       chapter: 'playground',
       path: path.replace('./', 'src/'),
       module,
-      step: { title: label(parts[2]), required: true },
+      step: { title: module.title ?? label(parts[2]), required: true },
     }
   })
   .sort(bySlug)
@@ -105,10 +105,7 @@ const inline = (text: string) =>
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noreferrer">$1</a>')
 
-/**
- * A very small Markdown: fenced code blocks, `## headings`, paragraphs.
- * Splitting on ``` first keeps blank lines inside a snippet intact.
- */
+// Tiny Markdown: code fences, ## headings, paragraphs. Split on ``` first to keep blank lines in code.
 const article = (text: string) =>
   text
     .trim()
@@ -132,16 +129,13 @@ const article = (text: string) =>
 
 let dispose: (() => void) | undefined
 
-/**
- * The panels stay as you left them, between steps and across a hot reload.
- * Private windows can refuse localStorage, so every access is guarded.
- */
+// Private windows can refuse localStorage, so every access is guarded.
 const remember = (key: string, closed?: boolean) => {
   try {
     if (closed === undefined) return localStorage.getItem(key) === 'closed'
     localStorage.setItem(key, closed ? 'closed' : 'open')
   } catch {
-    // no storage, no memory: the panels simply start open.
+    // No storage: the panels start open.
   }
 
   return closed ?? false
@@ -151,8 +145,7 @@ let leftClosed = remember('sidebar')
 let rightClosed = remember('panel')
 let hasNotes = true
 
-// ?raw in the URL hides everything around the canvas: the sidebar, the notes
-// and the panel. Handy on a projector.
+// ?raw hides everything but the canvas. Handy on a projector.
 const raw = new URLSearchParams(location.search).has('raw')
 
 document.body.classList.toggle('raw', raw)

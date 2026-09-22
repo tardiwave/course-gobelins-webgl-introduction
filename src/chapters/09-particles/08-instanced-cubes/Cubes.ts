@@ -1,12 +1,8 @@
 import { Box, Geometry, Mesh, Program, Vec3, type OGLRenderingContext } from 'ogl'
 import palette from '../../../shaders/chunks/palette.glsl?raw'
 import vertex from './vertex.glsl?raw'
-import fragment from './fragment.glsl?raw'
+import fragmentSource from './fragment.glsl?raw'
 
-/**
- * The same belt, drawn with real cubes instead of points. One geometry,
- * thousands of copies, a single draw call.
- */
 export class Cubes extends Mesh {
   private elapsed: { value: number }
 
@@ -25,11 +21,9 @@ export class Cubes extends Mesh {
       random[i] = Math.random()
     }
 
-    // A real cube this time, with its eight vertices and twelve triangles.
     const geometry = new Box(gl, { width: 0.02, height: 0.02, depth: 0.02 }) as Geometry
 
-    // instanced: 1 means "advance by one value per instance, not per vertex".
-    // The cube is uploaded once; only these two buffers say where each copy goes.
+    // instanced: 1 advances the attribute once per instance, not once per vertex.
     geometry.addAttribute('offset', { instanced: 1, size: 3, data: offset })
     geometry.addAttribute('random', { instanced: 1, size: 1, data: random })
 
@@ -39,15 +33,14 @@ export class Cubes extends Mesh {
       geometry,
       program: new Program(gl, {
         vertex,
-        fragment: palette + fragment,
+        fragment: palette + fragmentSource,
         uniforms: { uTime: elapsed, uLight: { value: new Vec3(1, 0.6, 0.4).normalize() } },
       }),
     })
 
     this.elapsed = elapsed
 
-    // The bounds of an instanced mesh describe one cube at the origin, which
-    // says nothing about where the copies are. So: no frustum culling.
+    // The bounds cover one cube at the origin, not the copies, so culling would be wrong.
     this.frustumCulled = false
   }
 

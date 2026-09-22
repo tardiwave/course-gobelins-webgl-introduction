@@ -13,11 +13,10 @@ varying vec3 vNormal;
 varying float vHeight;
 
 void main() {
-  // A wave travelling from pole to pole. Nothing here is new except where it
-  // is written: the vertex shader, which until now only ever projected.
+  // A wave travelling from pole to pole.
   float height = sin(position.y * 6.0 - uTime * 2.0);
 
-  // Pushing along the normal is what makes a surface swell rather than slide.
+  // Push along the normal so the surface swells instead of sliding.
   vec3 displaced = position + normal * height * uAmplitude;
 
   vUv = uv;

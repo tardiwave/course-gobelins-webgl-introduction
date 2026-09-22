@@ -43,20 +43,19 @@ généralement fourni par l'exportateur ; ici on peut le construire à la main
 parce qu'une sphère unité a une propriété commode : **la position d'un sommet
 est déjà sa normale**.
 
-## Deux pièges qui font un trou noir
+## Les pôles, gratuitement
 
-\`cross()\` renvoie exactement zéro aux pôles, où la normale est parallèle à Y,
-et \`normalize(vec3(0.0))\` vaut NaN. Un NaN dans une couleur donne un disque
-noir, et rien dans la console. D'où l'axe de repli :
+Aux pôles, la direction « est » n'existe plus. On ne normalise donc pas la
+tangente :
 
 \`\`\`glsl
-vec3 axis = abs(n.y) > 0.999
-  ? vec3(0.0, 0.0, 1.0)
-  : vec3(0.0, 1.0, 0.0);
+vec3 t = vec3(n.z, 0.0, -n.x);
 \`\`\`
 
-Et comme une carte équirectangulaire est écrasée à néant aux pôles, son détail
-y est du bruit pur : \`vFade\` le fait disparaître progressivement.
+Sa longueur vaut 1 à l'équateur et 0 aux pôles. Le relief s'efface tout seul
+là où la carte équirectangulaire est écrasée, et on évite le
+\`normalize(vec3(0.0))\`, qui renvoie NaN et laisse un disque noir sans
+aucune erreur dans la console.
 
 Tirez le curseur de force. Au-delà de 1.0 la planète cesse de ressembler à une
 planète : une normal map est un mensonge dont vous choisissez l'ampleur.`,

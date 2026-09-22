@@ -1,8 +1,5 @@
-// Course palette, taken from the Figma file.
-// This file is pasted in front of every fragment shader, since GLSL has no
-// #include — so changing the art direction means changing these five lines.
-
-// Declared here because this file comes first in the fragment shader.
+// Pasted in front of every fragment shader (GLSL has no #include),
+// so it also declares the float precision.
 precision mediump float;
 
 const vec3 DARK = vec3(0.055, 0.059, 0.067);  // #0e0f11

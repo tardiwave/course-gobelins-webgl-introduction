@@ -11,27 +11,20 @@ varying vec3 vBitangent;
 varying vec3 vLocal;
 
 void main() {
-  // Rebuilding the normal per PIXEL rather than per vertex is what keeps the
-  // shading smooth: a normal passed as a varying is interpolated across a
-  // triangle, and mountains are finer than that.
+  // Per pixel, not per vertex: a varying is interpolated across a triangle and loses the mountains.
   vec2 texel = 3.0 / uMapSize;
 
   float slopeU = height(vUv + vec2(texel.x, 0.0)) - height(vUv - vec2(texel.x, 0.0));
   float slopeV = height(vUv + vec2(0.0, texel.y)) - height(vUv - vec2(0.0, texel.y));
 
-  // Those slopes are in image space, and the image is stretched over the
-  // sphere: a step in u covers a whole parallel at the equator and almost
-  // nothing at the poles. Dividing by the arc each one really covers is what
-  // stops the poles turning to noise.
+  // Slopes are in image space: divide by the real arc of a texel, or the poles turn to noise.
   float parallel = max(sqrt(1.0 - vLocal.y * vLocal.y), 0.08);
   vec2 arc = vec2(2.0 * texel.x * 3.14159265 * parallel, texel.y * 3.14159265);
 
-  // How far the slope may bend the normal, kept separate from the
-  // displacement: the geometry can be subtle while the shading is not.
+  // uRelief bends the shading independently of the displacement.
   vec3 tilt = (vTangent * (slopeU / arc.x) + vBitangent * (slopeV / arc.y)) * uRelief;
 
-  // A ceiling, so a cliff never folds the normal past the horizon and turns
-  // the face into a black gash.
+  // Cap the tilt so a cliff never folds the normal past the horizon (black gash).
   float steep = length(tilt);
   if (steep > 1.0) tilt /= steep;
 

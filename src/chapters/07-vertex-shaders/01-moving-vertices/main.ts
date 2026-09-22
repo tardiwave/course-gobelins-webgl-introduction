@@ -9,7 +9,7 @@ export function start(root: HTMLElement) {
   const gl = renderer.gl
   root.append(gl.canvas)
 
-  // The same dark as DARK in the palette.
+  // DARK from the palette.
   gl.clearColor(0.055, 0.059, 0.067, 1)
 
   const camera = new Camera(gl, { fov: 45, near: 0.1, far: 100 })
@@ -34,8 +34,7 @@ export function start(root: HTMLElement) {
     },
   })
 
-  // A vertex shader can only move vertices that exist: a sphere with too few
-  // segments has nothing to bend. Try dropping this to 12.
+  // A vertex shader only moves existing vertices: too few segments, nothing to bend.
   const mesh = new Mesh(gl, {
     geometry: new Sphere(gl, { radius: 1, widthSegments: 96 }),
     program,

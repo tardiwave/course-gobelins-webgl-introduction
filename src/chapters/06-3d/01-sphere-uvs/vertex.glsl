@@ -1,4 +1,3 @@
-// In 3D the vertex shader finally has real work to do: project every vertex.
 attribute vec3 position;
 attribute vec2 uv;
 

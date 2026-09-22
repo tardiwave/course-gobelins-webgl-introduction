@@ -4,10 +4,6 @@ import palette from '../shaders/chunks/palette.glsl?raw'
 import vertex from '../shaders/belt/vertex.glsl?raw'
 import fragment from '../shaders/belt/fragment.glsl?raw'
 
-/**
- * The ring of particles around the planet. It owns its geometry, its shader
- * and its uniforms, so a scene only ever has to call update().
- */
 export class Belt extends Mesh {
   /** 0 hides the fog entirely, 1 fades the far side into the background. */
   fog = { value: 0 }

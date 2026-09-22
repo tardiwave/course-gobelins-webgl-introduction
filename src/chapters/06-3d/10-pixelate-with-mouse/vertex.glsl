@@ -10,9 +10,7 @@ varying vec3 vLocal;
 void main() {
   vUv = uv;
 
-  // The position in the sphere's OWN space, before any rotation. This is what
-  // lets the effect stay pinned to a place on the globe rather than to the
-  // screen: the planet turns, this does not change.
+  // Position in the sphere's own space, so the effect stays pinned to the globe as it turns.
   vLocal = normalize(position);
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);

@@ -17,8 +17,7 @@ void main() {
 
   float circle = exp(-length(uv - centre) * uFalloff);
 
-  // Deliberately wasteful. GLSL ES 1.00 needs a constant loop bound, so the
-  // slider cannot change it — it breaks out early instead.
+  // Fake load. GLSL ES 1.00 needs a constant loop bound, so the slider breaks out early.
   float busy = 0.0;
   for (int i = 0; i < 128; i++) {
     if (float(i) >= uLoad) break;

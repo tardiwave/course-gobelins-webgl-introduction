@@ -7,9 +7,9 @@ import { createPanel } from '../../../utils/panel.ts'
 import { createThumbnails } from '../../../utils/thumbnails.ts'
 import palette from '../../../shaders/chunks/palette.glsl?raw'
 import screenVertex from '../../../shaders/chunks/screen.glsl?raw'
-import thumbnails from '../../../shaders/chunks/thumbnails.glsl?raw'
+import thumbnailsChunk from '../../../shaders/chunks/thumbnails.glsl?raw'
 import fragmentSource from './fragment.glsl?raw'
-import fieldSource from './field.glsl?raw'
+import thumbnailSource from './thumbnail.glsl?raw'
 
 export function start(root: HTMLElement) {
   const { renderer, gl, camera, viewport, loop } = mountCanvas(root)
@@ -18,7 +18,7 @@ export function start(root: HTMLElement) {
   camera.lookAt([0, 0, 0])
 
   // Click the thumbnail to blow the field up, click again to go back.
-  const strip = createThumbnails(gl.canvas as HTMLCanvasElement, 1)
+  const thumbnails = createThumbnails(gl.canvas as HTMLCanvasElement, 1)
 
   const scene = new AsteroidsScene(gl)
 
@@ -43,17 +43,15 @@ export function start(root: HTMLElement) {
     }),
   })
 
-  // The same view as the first step, drawn over the corner of the frame so you
-  // can see the numbers and what they do at the same time.
-  const view = new Mesh(gl, {
+  const thumbnail = new Mesh(gl, {
     geometry,
     program: new Program(gl, {
       vertex: screenVertex,
-      fragment: palette + thumbnails + fieldSource,
+      fragment: palette + thumbnailsChunk + thumbnailSource,
       uniforms: {
         tField: { value: fluid.texture },
         uResolution: { value: new Vec2() },
-        uZoom: strip.zoom,
+        uZoom: thumbnails.zoom,
       },
       transparent: true,
       depthTest: false,
@@ -91,14 +89,14 @@ export function start(root: HTMLElement) {
     distort.program.uniforms.tField.value = fluid.texture
     renderer.render({ scene: distort })
 
-    view.program.uniforms.tField.value = fluid.texture
-    view.program.uniforms.uResolution.value.set(viewport.width, viewport.height)
-    renderer.render({ scene: view, clear: false })
+    thumbnail.program.uniforms.tField.value = fluid.texture
+    thumbnail.program.uniforms.uResolution.value.set(viewport.width, viewport.height)
+    renderer.render({ scene: thumbnail, clear: false })
   })
 
   return () => {
     panel.dispose()
-    strip.dispose()
+    thumbnails.dispose()
     pointer.dispose()
     orbit.remove()
     fluid.dispose()

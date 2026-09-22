@@ -14,12 +14,10 @@ export function start(root: HTMLElement) {
   let rock: Mesh | undefined
   let disposed = false
 
-  // Loading is asynchronous and the render loop is not going to wait. It
-  // starts drawing an empty scene, and the model joins it when it arrives.
+  // Asynchronous: the loop renders an empty scene until the model arrives.
   GLTFLoader.load(gl, '/models/asteroids.glb').then((gltf) => {
     if (disposed) return
 
-    // The pack holds ten different rocks. One is enough for now.
     const geometry = gltf.meshes[0].primitives[0].geometry
 
     rock = new Mesh(gl, {
@@ -28,8 +26,7 @@ export function start(root: HTMLElement) {
         vertex,
         fragment: palette + fragmentSource,
         uniforms: {
-          // The colour map travelled inside the .glb, so the loader already
-          // has it — no second request, no path to keep in sync.
+          // The texture is embedded in the .glb, so the loader already has it.
           tMap: { value: gltf.materials[0].baseColorTexture.texture },
           uLight: { value: new Vec3(1, 0.6, 0.4).normalize() },
         },

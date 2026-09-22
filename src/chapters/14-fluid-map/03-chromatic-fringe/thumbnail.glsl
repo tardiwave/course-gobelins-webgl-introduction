@@ -7,8 +7,6 @@ uniform float uZoom;
 varying vec2 vUv;
 
 vec3 fieldColor(vec2 uv) {
-  // Two signed numbers per texel. There is nothing to look at in them until
-  // you decide how to look.
   vec2 velocity = texture2D(tField, uv).xy;
 
   float speed = length(velocity);

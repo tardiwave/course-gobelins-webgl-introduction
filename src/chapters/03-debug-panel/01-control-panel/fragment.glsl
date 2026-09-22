@@ -16,7 +16,7 @@ void main() {
   vec2 centre = uMouse;
   centre.x *= aspect;
 
-  // Snapped to cells when the toggle is on: the floor() of the grid step.
+  // floor picks the cell, +0.5 moves to its centre.
   vec2 snapped = (floor(uv * uCells) + 0.5) / uCells;
   uv = mix(uv, snapped, uGrid);
 

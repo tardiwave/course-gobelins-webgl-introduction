@@ -5,7 +5,7 @@ import palette from '../../../shaders/chunks/palette.glsl?raw'
 import vertex from './vertex.glsl?raw'
 import fragmentSource from './fragment.glsl?raw'
 
-// The faces are square, so the scene is filmed square too.
+// Square, to match the cube faces.
 const SIZE = 1024
 
 export function start(root: HTMLElement) {
@@ -16,8 +16,7 @@ export function start(root: HTMLElement) {
 
   const scene = new AsteroidsScene(gl)
 
-  // The scene gets its own camera: it is being filmed, not looked at. The
-  // camera you drag belongs to the cube.
+  // A second camera films the scene into the texture; the one you drag looks at the cube.
   const film = new Camera(gl, { fov: 45, near: 0.1, far: 100, aspect: 1 })
   film.position.set(0, 1.2, 4.5)
   film.lookAt([0, 0, 0])

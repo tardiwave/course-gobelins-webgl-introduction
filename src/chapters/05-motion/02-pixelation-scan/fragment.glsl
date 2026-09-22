@@ -6,28 +6,24 @@ uniform float uTime;
 varying vec2 vUv;
 
 void main() {
-  // Aspect corrected once, at the top, as in every step that reads an image.
   vec2 uv = cover(vUv, uResolution, uTextureSize);
 
-  // Same margins as the previous step, so the scan never resets on screen.
+  // Off-screen margins, so the scan never resets in view.
   float width = 0.12;
   float position = mix(-width, 1.0 + width, fract(uTime * 0.2));
 
-  // Same moving band, but it is not drawn any more: it decides WHERE the
-  // pixelation applies. A shape used as a mask is the whole idea here.
+  // The band is a mask: it decides where the pixelation applies.
   float band = smoothstep(width, width - 0.02, abs(vUv.x - position));
 
   float size = 70.0;
-  // A grid of squares ON SCREEN. Snapping the texture coordinates directly
-  // would give rectangles, because the map is twice as wide as it is tall and
-  // cover() rescales the two axes differently.
+  // Square cells on screen: cover() scales the two texture axes differently.
   vec2 cells = vec2(size * uResolution.x / uResolution.y, size);
   vec2 snapped = (floor(vUv * cells) + 0.5) / cells;
   vec2 pixelated = cover(snapped, uResolution, uTextureSize);
 
   vec3 color = texture2D(tMap, mix(uv, pixelated, band)).rgb;
 
-  // Two thin lines on the borders of the band, so we can see where it is.
+  // Thin lines on the borders of the band.
   float edge = smoothstep(0.004, 0.0, abs(abs(vUv.x - position) - width));
   color = mix(color, BLUE, edge);
 

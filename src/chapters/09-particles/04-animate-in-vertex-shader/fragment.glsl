@@ -1,8 +1,7 @@
 varying float vRandom;
 
 void main() {
-  // The same number drives the colour. Every pixel of one point gets the same
-  // value: a point has a single vertex, so there is nothing to interpolate.
+  // A point has one vertex, so every pixel of it gets the same varying.
   vec3 color = mix(BLUE, CREAM, vRandom);
 
   gl_FragColor = vec4(color, 1.0);

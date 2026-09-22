@@ -1,7 +1,5 @@
-// Simplex noise 3D — Ashima Arts / Stefan Gustavson (MIT licence).
-// Treat it as a black box: it returns a value between -1 and 1 that varies
-// smoothly across space. The point of this file is that it works in the
-// VERTEX shader too, where sampling a texture is not always available.
+// Simplex noise 3D, Ashima Arts / Stefan Gustavson (MIT licence).
+// Returns -1 to 1. Works in the vertex shader, where textures may not be available.
 
 vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
 vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
@@ -69,7 +67,7 @@ float snoise(vec3 v) {
   return 42.0 * dot(m * m, vec4(dot(p0, x0), dot(p1, x1), dot(p2, x2), dot(p3, x3)));
 }
 
-// Several octaves stacked: wide masses first, fine detail last.
+// Octaves stacked: wide shapes first, fine detail last.
 float fbm(vec3 p) {
   return snoise(p) * 0.5
        + snoise(p * 2.0) * 0.25

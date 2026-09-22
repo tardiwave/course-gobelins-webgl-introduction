@@ -7,13 +7,6 @@ import precision from '../shaders/chunks/precision.glsl?raw'
 import screenVertex from '../shaders/chunks/screen.glsl?raw'
 import fragment from '../shaders/fluid/simulation.glsl?raw'
 
-/**
- * A velocity field living in a texture, stirred by the cursor.
- *
- * The same feedback loop as the asteroid simulation — read one float target,
- * write the other, swap — except the texels are places on the screen rather
- * than rocks.
- */
 export class Fluid {
   /** How hard the cursor pushes the field, and how fast it forgets. */
   strength = { value: 12 }
@@ -31,9 +24,8 @@ export class Fluid {
     this.renderer = renderer
     const gl = renderer.gl
 
-    // A velocity is signed and often bigger than one, so it cannot live in an
-    // 8-bit texture. LINEAR on top of that, because advection samples between
-    // texels and a NEAREST field advects in visible blocks.
+    // A velocity is signed and can exceed 1, so it needs a float texture.
+    // LINEAR because advection samples between texels: NEAREST shows blocks.
     if (
       !gl.getExtension('OES_texture_float') ||
       !gl.getExtension('OES_texture_float_linear') ||
@@ -58,7 +50,7 @@ export class Fluid {
 
     const geometry = new Triangle(gl)
 
-    // Both targets start out holding whatever was in that memory before.
+    // New render targets hold leftover memory, so this mesh clears them.
     const reset = new Mesh(gl, {
       geometry,
       program: new Program(gl, {
@@ -78,7 +70,7 @@ export class Fluid {
         fragment: precision + fragment,
         uniforms: {
           tField: { value: this.current.texture },
-          uPointer: this.pointer,
+          uMouse: this.pointer,
           uVelocity: this.velocity,
           uAspect: { value: 1 },
           uDelta: { value: 0 },
@@ -95,8 +87,6 @@ export class Fluid {
   }
 
   update(pointer: Pointer, delta: number, aspect: number) {
-    // The cursor arrives already measured: core/Pointer.ts turns events into
-    // a position and a speed that do not depend on how often they fire.
     this.pointer.value.copy(pointer.inside ? pointer.uv : OFFSCREEN)
     this.velocity.value.copy(pointer.velocity)
 

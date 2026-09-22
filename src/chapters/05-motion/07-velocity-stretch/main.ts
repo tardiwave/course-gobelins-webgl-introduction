@@ -1,8 +1,9 @@
 import { Mesh, Program, Renderer, Triangle, Vec2 } from 'ogl'
 import { loadTexture } from '../../../utils/texture.ts'
+import { damp } from '../../../utils/maths.ts'
 import palette from '../../../shaders/chunks/palette.glsl?raw'
-import uvHelpers from '../../../shaders/chunks/uv.glsl?raw'
-import vertex from '../../../shaders/chunks/screen.glsl?raw'
+import uv from '../../../shaders/chunks/uv.glsl?raw'
+import screenVertex from '../../../shaders/chunks/screen.glsl?raw'
 import fragmentSource from './fragment.glsl?raw'
 
 export function start(root: HTMLElement) {
@@ -22,8 +23,8 @@ export function start(root: HTMLElement) {
   const velocity = new Vec2()
 
   const program = new Program(gl, {
-    vertex,
-    fragment: palette + uvHelpers + fragmentSource,
+    vertex: screenVertex,
+    fragment: palette + uv + fragmentSource,
     uniforms: {
       tMap: { value: loadTexture(gl, '/textures/earth.png') },
       uResolution: { value: new Vec2() },
@@ -47,16 +48,18 @@ export function start(root: HTMLElement) {
   root.addEventListener('pointermove', onPointerMove)
 
   let frame = 0
-  const render = () => {
-    // current += (target - current) * 0.08 — the circle always runs late.
-    const dx = (target.x - current.x) * 0.08
-    const dy = (target.y - current.y) * 0.08
+  let previous = performance.now()
 
-    current.x += dx
-    current.y += dy
+  const render = (now: number) => {
+    const delta = Math.min(Math.max(now - previous, 0), 33) / 1000
+    previous = now
 
-    // The ground covered this frame IS the velocity. Nothing else to compute.
-    velocity.set(dx, dy)
+    const x = damp(current.x, target.x, 5, delta)
+    const y = damp(current.y, target.y, 5, delta)
+
+    // Distance over time: uv per second, whatever the frame rate.
+    if (delta > 0) velocity.set((x - current.x) / delta, (y - current.y) / delta)
+    current.set(x, y)
 
     program.uniforms.uResolution.value.set(renderer.width, renderer.height)
     renderer.render({ scene: mesh })

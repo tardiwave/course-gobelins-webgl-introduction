@@ -1,13 +1,12 @@
 import { Geometry, Mesh, Program, type OGLRenderingContext } from 'ogl'
 import palette from '../../../shaders/chunks/palette.glsl?raw'
 import vertex from './vertex.glsl?raw'
-import fragment from './fragment.glsl?raw'
+import fragmentSource from './fragment.glsl?raw'
 
 export class Points extends Mesh {
   constructor(gl: OGLRenderingContext, count = 2000) {
     const position = new Float32Array(count * 3)
-    // One extra number per particle. Anything put in a buffer like this
-    // becomes per-particle data — size, colour, speed, delay, whatever.
+    // Any attribute buffer is per-particle data: size, colour, speed, delay.
     const random = new Float32Array(count)
 
     for (let i = 0; i < count; i++) {
@@ -23,9 +22,8 @@ export class Points extends Mesh {
       }),
       program: new Program(gl, {
         vertex,
-        fragment: palette + fragment,
-        // gl_PointSize counts framebuffer pixels, so a retina screen needs
-        // this or the particles come out half size.
+        fragment: palette + fragmentSource,
+        // gl_PointSize is in framebuffer pixels: without the pixel ratio, retina halves it.
         uniforms: { uPixelRatio: { value: gl.renderer.dpr } },
       }),
     })

@@ -3,23 +3,19 @@ uniform float uTime;
 
 varying vec2 vUv;
 
-// Two pseudo-random numbers from a cell corner. GLSL has no rand(), so every
-// shader in the world hashes something — here a sine, stretched until its
-// decimals stop being predictable.
+// GLSL has no rand(): a stretched sine gives two pseudo-random numbers per corner.
 vec2 hash(vec2 p) {
   p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
 
   return -1.0 + 2.0 * fract(sin(p) * 43758.5453123);
 }
 
-// Perlin noise: a random DIRECTION at each corner of a grid, and the value at
-// a point is how much it agrees with the four corners around it.
+// Perlin: a random direction per grid corner, blended across the cell.
 float perlin(vec2 p) {
   vec2 cell = floor(p);
   vec2 local = fract(p);
 
-  // Smootherstep, not smoothstep. Its second derivative is zero at the ends
-  // too, which is what removes the grid from the result.
+  // Smootherstep, not smoothstep: its flat second derivative hides the grid.
   vec2 blend = local * local * local * (local * (local * 6.0 - 15.0) + 10.0);
 
   float a = dot(hash(cell + vec2(0.0, 0.0)), local - vec2(0.0, 0.0));
@@ -30,14 +26,12 @@ float perlin(vec2 p) {
   return mix(mix(a, b, blend.x), mix(c, d, blend.x), blend.y);
 }
 
-// Fractal Brownian motion: the same noise added to itself at half the size
-// and half the strength, five times over. Wide masses first, fine grain last.
+// fBm: the same noise at half the size and half the strength, five times.
 float fbm(vec2 p) {
   float total = 0.0;
   float amplitude = 0.5;
 
-  // GLSL ES 1.00 needs a loop count it can work out in advance, so this one
-  // is a constant rather than a uniform.
+  // GLSL ES 1.00 needs a constant loop count, so it cannot be a uniform.
   for (int i = 0; i < 5; i++) {
     total += perlin(p) * amplitude;
 

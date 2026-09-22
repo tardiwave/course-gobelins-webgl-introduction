@@ -1,5 +1,4 @@
-// Vertex shader shared by everything drawn fullscreen.
-// It does two things only: place the triangle, and pass the UVs along.
+// Shared by every fullscreen pass: places the triangle, passes the UVs.
 attribute vec2 position;
 attribute vec2 uv;
 

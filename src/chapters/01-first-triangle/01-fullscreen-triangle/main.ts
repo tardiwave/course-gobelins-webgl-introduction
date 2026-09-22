@@ -31,14 +31,12 @@ export function start(root: HTMLElement) {
 
   frame = requestAnimationFrame(render)
 
-  // Every step returns its own cleanup. Forget it and the loop keeps running
-  // on a canvas nobody can see.
+  // Without this cleanup the loop keeps rendering to a detached canvas.
   return () => {
     cancelAnimationFrame(frame)
     observer.disconnect()
     gl.canvas.remove()
-    // Removing the canvas does not free its GPU context: the browser keeps
-    // it until garbage collection, and only allows about sixteen at once.
+    // Removing the canvas does not free the WebGL context, and browsers allow about 16.
     gl.getExtension('WEBGL_lose_context')?.loseContext()
   }
 }

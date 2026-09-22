@@ -4,8 +4,8 @@ import { createPanel } from '../../../utils/panel.ts'
 import palette from '../../../shaders/chunks/palette.glsl?raw'
 import vertex from './vertex.glsl?raw'
 import fragmentSource from './fragment.glsl?raw'
-import cloudsSource from './clouds.frag.glsl?raw'
-import haloSource from './halo.frag.glsl?raw'
+import cloudsSource from './clouds.glsl?raw'
+import haloSource from './halo.glsl?raw'
 
 const HALO_SCALE = 1.25
 
@@ -14,7 +14,7 @@ export function start(root: HTMLElement) {
   const gl = renderer.gl
   root.append(gl.canvas)
 
-  // The same dark as DARK in the palette.
+  // DARK from the palette.
   gl.clearColor(0.055, 0.059, 0.067, 1)
 
   const camera = new Camera(gl, { fov: 45, near: 0.1, far: 100 })
@@ -49,7 +49,7 @@ export function start(root: HTMLElement) {
   })
   planet.setParent(scene)
 
-  // The same sphere, barely larger, drawn with transparency.
+  // A slightly larger sphere, drawn with transparency.
   const clouds = new Mesh(gl, {
     geometry,
     program: new Program(gl, {
@@ -105,7 +105,7 @@ export function start(root: HTMLElement) {
     planet.rotation.y = time * 0.08
     planet.rotation.z = 0.41
 
-    // Clouds drift a little faster than the ground below them.
+    // Clouds drift a little faster than the ground.
     clouds.rotation.y = time * 0.11
     clouds.rotation.z = 0.41
 

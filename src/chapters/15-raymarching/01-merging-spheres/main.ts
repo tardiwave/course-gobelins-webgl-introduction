@@ -1,15 +1,15 @@
 import { Mesh, Program, Triangle, Vec2 } from 'ogl'
 import { mountCanvas } from '../../../core/canvas.ts'
 import { createPanel } from '../../../utils/panel.ts'
+import { damp } from '../../../utils/maths.ts'
 import palette from '../../../shaders/chunks/palette.glsl?raw'
-import vertex from '../../../shaders/chunks/screen.glsl?raw'
+import screenVertex from '../../../shaders/chunks/screen.glsl?raw'
 import fragmentSource from './fragment.glsl?raw'
 
 export function start(root: HTMLElement) {
   const { renderer, gl, viewport, loop } = mountCanvas(root)
 
-  // There is no Camera object to hand to Orbit — the scene lives in a shader.
-  // So the orbit is two accumulated angles, sent as a uniform.
+  // No Camera to hand to Orbit: the orbit is two angles sent as a uniform.
   const orbit = new Vec2(0, 0.15)
   const target = new Vec2(0, 0.15)
 
@@ -18,7 +18,7 @@ export function start(root: HTMLElement) {
   let lastY = 0
 
   const program = new Program(gl, {
-    vertex,
+    vertex: screenVertex,
     fragment: palette + fragmentSource,
     uniforms: {
       uTime: { value: 0 },
@@ -30,8 +30,7 @@ export function start(root: HTMLElement) {
 
   const mesh = new Mesh(gl, { geometry: new Triangle(gl), program })
 
-  // The canvas, not the root: the debug panel sits on top of it and must not
-  // start a drag.
+  // The canvas, not the root, so dragging the debug panel does not orbit.
   const canvas = gl.canvas as HTMLCanvasElement
 
   const onDown = (event: PointerEvent) => {
@@ -70,10 +69,9 @@ export function start(root: HTMLElement) {
     step: 0.01,
   })
 
-  const stop = loop(({ time }) => {
-    // Damped, like every other input in this course.
-    orbit.x += (target.x - orbit.x) * 0.1
-    orbit.y += (target.y - orbit.y) * 0.1
+  const stop = loop(({ time, delta }) => {
+    orbit.x = damp(orbit.x, target.x, 6.3, delta)
+    orbit.y = damp(orbit.y, target.y, 6.3, delta)
 
     program.uniforms.uTime.value = time
     program.uniforms.uResolution.value.set(viewport.width, viewport.height)

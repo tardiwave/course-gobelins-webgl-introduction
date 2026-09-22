@@ -14,15 +14,11 @@ export function start(root: HTMLElement) {
   let rock: Mesh | undefined
   let disposed = false
 
-  // Loading is asynchronous and the render loop is not going to wait. It
-  // starts drawing an empty scene, and the model joins it when it arrives.
+  // Asynchronous: the loop renders an empty scene until the model arrives.
   GLTFLoader.load(gl, '/models/asteroids.glb').then((gltf) => {
     if (disposed) return
 
-    // A glTF file is a scene: nodes, meshes, materials, sometimes animation.
-    // We take the geometry and leave the rest — the material is ours to write,
-    // which is the whole point of the course.
-    // The pack holds ten different rocks. One is enough for now.
+    // A glTF is a whole scene: keep the geometry, write the material yourself.
     const geometry = gltf.meshes[0].primitives[0].geometry
 
     rock = new Mesh(gl, {

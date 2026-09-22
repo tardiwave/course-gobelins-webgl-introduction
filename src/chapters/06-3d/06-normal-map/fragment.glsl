@@ -7,16 +7,13 @@ varying vec2 vUv;
 varying vec3 vNormal;
 varying vec3 vTangent;
 varying vec3 vBitangent;
-varying float vFade;
 
 void main() {
-  // A normal map stores directions, not colours. Hence the lavender: a flat
-  // area is (0.5, 0.5, 1.0), which remaps to (0, 0, 1) — straight out.
+  // Normal maps store directions remapped to 0..1: flat (0.5, 0.5, 1.0) becomes (0, 0, 1).
   vec3 mapped = texture2D(tNormal, vUv).rgb * 2.0 - 1.0;
-  mapped.xy *= uStrength * vFade;
+  mapped.xy *= uStrength;
 
-  // Those directions are relative to the surface, so rebuild them onto the
-  // sphere: x goes east, y north, z straight out.
+  // Map directions are relative to the surface: x east, y north, z straight out.
   vec3 normal = normalize(vTangent * mapped.x + vBitangent * mapped.y + vNormal * mapped.z);
 
   float light = max(dot(normal, normalize(uLight)), 0.0);

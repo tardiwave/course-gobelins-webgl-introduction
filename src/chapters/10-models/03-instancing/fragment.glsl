@@ -8,8 +8,6 @@ varying float vRandom;
 void main() {
   vec3 color = texture2D(tMap, vUv).rgb;
 
-  // A little variety between rocks, so a thousand copies of one model do not
-  // read as a thousand copies of one model.
   color = mix(color * 0.65, color * 1.15, vRandom);
 
   float light = max(dot(normalize(vNormal), normalize(uLight)), 0.0);

@@ -34,10 +34,7 @@ export function start(root: HTMLElement) {
   GLTFLoader.load(gl, '/models/asteroids.glb').then((gltf) => {
     if (disposed) return
 
-    // The loaded geometry takes instanced attributes like any other. Three
-    // hundred and twenty triangles, uploaded once, drawn twice as many times.
-    // The pack holds ten rocks between 1 500 and 3 400 triangles. For a belt
-    // of a few thousand, the lightest one is the sensible pick.
+    // Instancing multiplies the triangle count, so pick the lightest rock of the pack.
     const geometry = gltf.meshes[1].primitives[0].geometry
     geometry.addAttribute('offset', { instanced: 1, size: 3, data: offset })
     geometry.addAttribute('random', { instanced: 1, size: 1, data: random })

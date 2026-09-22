@@ -17,13 +17,10 @@ void main() {
     texture2D(tScene, vUv - offset).b
   );
 
-  // fract(uTime) reseeds the noise every frame, so the grain crawls instead
-  // of sitting there as a static dirty overlay.
+  // fract(uTime) reseeds the noise every frame, so the grain moves.
   float grain = hash(vUv + fract(uTime)) - 0.5;
 
-  // Real grain lives in the midtones: none in the blacks, none in the blown
-  // highlights. Sprayed evenly it reads as broadcast static instead of film.
-  // The lower edge clears the background, which sits just above pure black.
+  // Grain in the midtones only; the lower edge keeps the near-black background clean.
   float luminance = dot(color, vec3(0.299, 0.587, 0.114));
   float window = smoothstep(0.08, 0.24, luminance) * smoothstep(1.0, 0.45, luminance);
 

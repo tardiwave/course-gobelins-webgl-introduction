@@ -4,7 +4,7 @@ import { createPanel } from '../../../utils/panel.ts'
 import palette from '../../../shaders/chunks/palette.glsl?raw'
 import vertex from './vertex.glsl?raw'
 import fragmentSource from './fragment.glsl?raw'
-import haloSource from './halo.frag.glsl?raw'
+import haloSource from './halo.glsl?raw'
 
 const HALO_SCALE = 1.25
 
@@ -13,7 +13,7 @@ export function start(root: HTMLElement) {
   const gl = renderer.gl
   root.append(gl.canvas)
 
-  // The same dark as DARK in the palette.
+  // DARK from the palette.
   gl.clearColor(0.055, 0.059, 0.067, 1)
 
   const camera = new Camera(gl, { fov: 45, near: 0.1, far: 100 })
@@ -54,7 +54,7 @@ export function start(root: HTMLElement) {
       fragment: palette + haloSource,
       uniforms: { uLight: light, uScale: { value: HALO_SCALE }, uFalloff: { value: 6.5 } },
       transparent: true,
-      // We want the far side of the shell, the one behind the planet.
+      // Draw only the far side of the shell, behind the planet.
       cullFace: gl.FRONT,
       // Transparent surfaces must not write depth, or they hide each other.
       depthWrite: false,
